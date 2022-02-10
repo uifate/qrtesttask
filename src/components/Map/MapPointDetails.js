@@ -1,31 +1,43 @@
+import { autorun } from "mobx";
 import React, { useEffect, useState } from "react";
 
-function notNaN(number) {
-  if (isNaN(number)) return;
-  return number;
+function useDisplayValue(get, set, transform) {
+  const [displayValue, setDisplayValue] = useState(get());
+
+  useEffect(() => {
+    autorun(() => setDisplayValue(get()));
+  }, []);
+
+  return [displayValue, function(value) {
+    setDisplayValue(value);
+    const transformed = transform(value);
+    if (!isNaN(transformed)) set(transformed);
+  }];
 }
 
 export function MapPointDetails({ point, style }) {
-  const [x, setX] = useState(point.x);
-  const [y, setY] = useState(point.y);
-  const [name, setName] = useState(point.name);
-  const [amount, setAmount] = useState(point.amount);
-
-  useEffect(() => {
-    point.change({
-      x: notNaN(parseFloat(x)),
-      y: notNaN(parseFloat(y)),
-      name: name,
-      amount: notNaN(parseInt(amount))
-    });
-  }, [x, y, name, amount]);
+  const [displayX, setX] = useDisplayValue(
+    () => point.x, 
+    x => point.change({ x }),
+    parseFloat
+  );
+  const [displayY, setY] = useDisplayValue(
+    () => point.y, 
+    y => point.change({ y }),
+    parseFloat
+  );
+  const [displayAmount, setAmount] = useDisplayValue(
+    () => point.amount, 
+    amount => point.change({ amount }),
+    parseInt
+  );
 
   return (
     <div style={style} className="map-point__details">
-      <input type="text" value={x} onChange={(e) => setX(e.target.value)} />
-      <input type="text" value={y} onChange={(e) => setY(e.target.value)} />
-      <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-      <input type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <input type="text" value={displayX} onChange={(e) => setX(e.target.value)} />
+      <input type="text" value={displayY} onChange={(e) => setY(e.target.value)} />
+      <input type="text" value={point.name} onChange={(e) => point.change({ name: e.target.value })} />
+      <input type="text" value={displayAmount} onChange={(e) => setAmount(e.target.value)} />
       <button onClick={() => point.remove()}>Remove</button>
     </div>
   );
