@@ -1,0 +1,27 @@
+.map-point {
+  user-select: none;
+  z-index: 2;
+  white-space: pre;
+}
+
+.map-point:hover {
+  color: #44e;
+  z-index: 3;
+  background-color: rgba(255, 255, 255, .9);
+}
+
+.map-point_selected {
+  color: #44e;
+  font-weight: 900;
+  z-index: 3;
+  background-color: rgba(255, 255, 255, .9);
+}
+
+.map-point__details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  background-color: rgba(0, 0, 0, .5);
+  padding: 10px;
+  z-index: 3;
+}

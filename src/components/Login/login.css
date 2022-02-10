@@ -1,0 +1,8 @@
+.login-form {
+  background-color: #eee;
+  padding: 10px;
+}
+
+.login-form__label {
+  display: block;
+}
