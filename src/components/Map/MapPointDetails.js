@@ -5,7 +5,7 @@ function useDisplayValue(get, set, transform) {
   const [displayValue, setDisplayValue] = useState(get());
 
   useEffect(() => {
-    autorun(() => setDisplayValue(get()));
+    return autorun(() => setDisplayValue(get()));
   }, []);
 
   return [displayValue, function(value) {
