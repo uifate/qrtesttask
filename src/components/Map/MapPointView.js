@@ -5,10 +5,6 @@ import classnames from "classnames";
 import { MapPointDetails } from "./MapPointDetails";
 
 export const MapPointView = observer(({ point }) => {
-  function handleClick() {
-    point.select();
-  }
-
   const style = {
     position: "absolute",
     top: `${point.y}%`,
@@ -23,7 +19,7 @@ export const MapPointView = observer(({ point }) => {
           "map-point", 
           {"map-point_selected": point.isSelected}
         )}
-        onClick={handleClick}
+        onMouseDown={() => point.select()}
       >● {point.name}</span>
       { point.isSelected && <MapPointDetails point={point} style={style} /> }
     </>
