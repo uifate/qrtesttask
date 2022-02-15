@@ -26,7 +26,7 @@ export const MapView = observer(({ style, res, mapStore }) => {
     const x = clamp(relMouseX / rect.width * 100, 0, 100);
     const y = clamp(relMouseY / rect.height * 100, 0, 100);
 
-    mapStore.selectedPoint.change({ x, y });
+    mapStore.changeSelectedPoint({ x, y });
   }
 
   function handleMouseDown() {
