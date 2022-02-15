@@ -1,35 +1,26 @@
-import { autorun } from "mobx";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { isInt, isFloat, toInt, toFloat } from "validator";
 
-function useDisplayValue(get, set, transform) {
-  const [displayValue, setDisplayValue] = useState(get());
-
-  useEffect(() => {
-    return autorun(() => setDisplayValue(get()));
-  }, []);
-
-  return [displayValue, function(value) {
-    setDisplayValue(value);
-    const transformed = transform(value);
-    if (!isNaN(transformed)) set(transformed);
-  }];
-}
+import { useDisplayValue } from "../../hooks/useDisplayValue";
 
 export function MapPointDetails({ point, style }) {
   const [displayX, setX] = useDisplayValue(
     () => point.x, 
     x => point.change({ x }),
-    parseFloat
+    v => isFloat(v) || v === "",
+    toFloat
   );
   const [displayY, setY] = useDisplayValue(
     () => point.y, 
     y => point.change({ y }),
-    parseFloat
+    v => isFloat(v) || v === "",
+    toFloat
   );
   const [displayAmount, setAmount] = useDisplayValue(
     () => point.amount, 
     amount => point.change({ amount }),
-    parseInt
+    v => isInt(v) || v === "",
+    toInt
   );
 
   return (
