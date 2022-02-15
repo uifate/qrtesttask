@@ -6,6 +6,10 @@ import { MapPointView } from ".";
 
 import { MapContext } from "./MapContext";
 
+function clamp(value, min, max) {
+  return Math.max(Math.min(value, max), min);
+}
+
 export const MapView = observer(({ style, res, mapStore }) => {
   const containerRef = useRef();
 
@@ -16,8 +20,8 @@ export const MapView = observer(({ style, res, mapStore }) => {
     const rect = containerRef.current.getBoundingClientRect();
     const relMouseX = event.clientX - rect.left;
     const relMouseY = event.clientY - rect.top;
-    const x = relMouseX / rect.width * 100;
-    const y = relMouseY / rect.height * 100;
+    const x = clamp(relMouseX / rect.width * 100, 0, 100);
+    const y = clamp(relMouseY / rect.height * 100, 0, 100);
 
     mapStore.selectedPoint.change({ x, y });
   }
