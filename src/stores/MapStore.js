@@ -1,45 +1,46 @@
-import { types, destroy, isAlive, getParent } from "mobx-state-tree";
+import { types, destroy } from "mobx-state-tree";
 
 const mapInitial = require("~/src/assets/map.json").map((p, i) => ({ ...p, id: i }));
 
 const MapPoint = types.model({
-  id: types.number,
+  id: types.identifierNumber,
   name: types.string,
   x: types.number,
   y: types.number,
   amount: types.number
 }).actions((self) => ({
-  select() {
-    getParent(self, 2).setSelected(self.id);
-  },
   change(point) {
     self.x = point.x ?? self.x;
     self.y = point.y ?? self.y;
     self.name = point.name ?? self.name;
     self.amount = point.amount ?? self.amount;
-    getParent(self, 2).savePoints();
-  },
-  remove() {
-    getParent(self, 2).removePoint(self);
-  }
-})).views((self) => ({
-  get isSelected() {
-    if (isAlive(self)) {
-      return getParent(self, 2).selected === self.id;
-    }
   }
 }));
 
 const MapStore = types.model("MapStore", {
   points: types.optional(types.array(MapPoint), []),
-  selected: types.optional(types.number, -1)
+  selectedPoint: types.maybeNull(types.reference(MapPoint))
 }).actions((self) => ({
   setSelected(id) {
-    self.selected = id;
+    self.selectedPoint = id;
+  },
+  setSelectedPoint(point) {
+    self.setSelected(point.id);
+  },
+  unselect() {
+    self.setSelected(null);
   },
   removePoint(point) {
     destroy(point);
-    self.setSelected(-1);
+    self.unselect();
+  },
+  removeSelectedPoint() {
+    self.removePoint(self.selectedPoint);
+    self.savePoints();
+  },
+  changeSelectedPoint(point) {
+    self.selectedPoint.change(point);
+    self.savePoints();
   },
   newPoint() {
     const id = self.points.length ? self.points[self.points.length - 1].id + 1 : 1;
@@ -65,11 +66,7 @@ const MapStore = types.model("MapStore", {
   resetPoints() {
     self.pointsFromArray(mapInitial);
     self.savePoints();
-    self.setSelected(-1);
-  }
-})).views((self) => ({
-  get selectedPoint() {
-    return self.points.find(p => p.id === self.selected);
+    self.unselect();
   }
 }));
 

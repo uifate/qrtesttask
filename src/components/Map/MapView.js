@@ -4,6 +4,8 @@ import { observer } from "mobx-react-lite";
 import "./map.css";
 import { MapPointView } from ".";
 
+import { MapContext } from "./MapContext";
+
 export const MapView = observer(({ style, res, mapStore }) => {
   const containerRef = useRef();
 
@@ -21,18 +23,20 @@ export const MapView = observer(({ style, res, mapStore }) => {
   }
 
   return (
-    <div style={{ position: "relative", ...style }} onMouseMove={handleMouseMove} ref={containerRef} >
-      <img
-        src={res}
-        style={{ width: "100%", height: "100%" }}
-        onClick={() => mapStore.setSelected(-1) }
-        draggable="false"
-      />
-      {
-        mapStore.points.map(
-          point => <MapPointView point={point} key={point.id} />
-        )
-      }
-    </div>
+    <MapContext.Provider value={{ mapStore }}>
+      <div style={{ position: "relative", ...style }} onMouseMove={handleMouseMove} ref={containerRef} >
+        <img
+          src={res}
+          style={{ width: "100%", height: "100%" }}
+          onClick={() => mapStore.unselect() }
+          draggable="false"
+        />
+        {
+          mapStore.points.map(
+            point => <MapPointView point={point} key={point.id} />
+          )
+        }
+      </div>
+    </MapContext.Provider>
   );
 })
