@@ -16,12 +16,12 @@ export const App = observer(({ app }) => {
 
   return (
     <>
-      { !app.userStore.loggedIn && <Login user={app.userStore} /> }
+      { !app.userStore.loggedIn && <Login userStore={app.userStore} /> }
       { app.userStore.loggedIn && <>
         <button onClick={() => app.mapStore.newPoint()}>New point</button>
         <button onClick={() => app.mapStore.resetPoints()}>Reset points</button>
         <button onClick={() => app.userStore.logout()}>Logout</button>
-        <MapView style={{width: "1000px", height: "1000px"}} res={mapRes} map={app.mapStore} />
+        <MapView style={{width: "1000px", height: "1000px"}} res={mapRes} mapStore={app.mapStore} />
       </> }
     </>
   );

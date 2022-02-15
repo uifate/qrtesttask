@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import "./login.css";
 
-export const Login = observer(({ user }) => {
+export const Login = observer(({ userStore }) => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [failed, setFailed] = useState(false);
@@ -11,7 +11,7 @@ export const Login = observer(({ user }) => {
   function handleSubmit(event) {
     event.preventDefault();
 
-    setFailed(!user.login(login, password));
+    setFailed(!userStore.login(login, password));
   }
 
   return (
