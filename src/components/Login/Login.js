@@ -1,9 +1,8 @@
-import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import "./login.css";
 
-export const Login = observer(({ userStore }) => {
+export function Login({ userStore }) {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [failed, setFailed] = useState(false);
@@ -32,4 +31,4 @@ export const Login = observer(({ userStore }) => {
       </form>
     </>
   );
-});
+};
