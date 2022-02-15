@@ -5,7 +5,7 @@ import classnames from "classnames";
 import { MapPointDetails } from "./MapPointDetails";
 import { MapContext } from "./MapContext";
 
-export const MapPointView = observer(({ point }) => {
+export const MapPointView = observer(({ point, onMouseDown }) => {
   const { mapStore } = useContext(MapContext);
 
   const style = {
@@ -24,6 +24,12 @@ export const MapPointView = observer(({ point }) => {
   // не нашел
   const isSelected = mapStore.selectedPoint === point;
 
+  function handleMouseDown(event) {
+    mapStore.setSelectedPoint(point);
+
+    onMouseDown(event);
+  }
+
   return (
     <>
       <span
@@ -32,7 +38,7 @@ export const MapPointView = observer(({ point }) => {
           "map-point", 
           {"map-point_selected": isSelected}
         )}
-        onMouseDown={() => mapStore.setSelectedPoint(point)}
+        onMouseDown={handleMouseDown}
       >● {point.name}</span>
       { isSelected && <MapPointDetails point={point} style={style} /> }
     </>
